@@ -1,0 +1,460 @@
+# 05_workflow.yaml — 机器可读项目任务图
+# 与 04_项目执行WORKFLOW.md 一一对应；两者冲突时以 04 为准并同步本文件。
+meta:
+  project: "从图像到动态三维：扩散模型驱动的 4D 内容生成综述"
+  course: "计算机视觉 2026 课程项目"
+  version: "1.0"
+  created: "2026-10-26"
+  timezone: "Asia/Shanghai"
+  start_date: "2026-10-26"          # W1 周一
+  weeks: 8
+  defense_assumed: "2026-12-18"     # W8 周五（假设，按实际平移）
+  total_hours: 242
+  capacity_hours: 256               # 4 人 × 8 周 × 8 h
+  utilization: 0.945
+  critical_path: ["T2.3", "T4.1", "T4.2", "T6.1", "T6.5", "T7.2", "T7.6"]
+
+roles:
+  R1: {name: "负责人 / 总编", scope: "研究框架、机制分析、正文整合、G1/G4/G5 门"}
+  R2: {name: "案例与素材", scope: "案例池、素材台账、复现环境、运行日志、许可核验"}
+  R3: {name: "观察与标注", scope: "观察协议执行、标注、指标、图表、一致性检验"}
+  R4: {name: "原型与演示", scope: "前端、数据管线、可用性测试、答辩材料"}
+
+case_owners:
+  C1: R2
+  C2: R3
+  C3: R4
+
+gates:
+  - id: G0
+    name: "开题通过"
+    week: 0
+    date: "2026-10-26"
+    status: passed
+    criteria: ["开题报告 8 页、36 篇引用"]
+  - id: G1
+    name: "分析骨架锁定"
+    week: 1
+    date: "2026-11-01"
+    criteria:
+      - "三接口定义与观测量一一对应"
+      - "能力矩阵 14×9 无空格、每格有出处"
+      - "三个观察任务能映射到接口"
+      - "2026 补遗与正文不矛盾"
+  - id: G2
+    name: "案例锁定"
+    week: 2
+    date: "2026-11-08"
+    criteria:
+      - "3 案例通过 5 维筛选（无 1 分项）"
+      - "每案例有主/备路径与降级等级"
+      - "素材台账完整（许可 + 哈希）"
+      - "案例脚本写明失败含义"
+  - id: G3
+    name: "协议与素材就绪"
+    week: 3
+    date: "2026-11-15"
+    criteria:
+      - "rubric 有 1/3/5 锚点；pilot κ ≥ 0.6"
+      - "指标脚本一条命令可复跑"
+      - "至少 1 案例产出同 (C,t) 配对画面"
+      - "三段成本可分离"
+  - id: G4
+    name: "原型 MVP"
+    week: 5
+    date: "2026-11-29"
+    criteria:
+      - "2 完整 + 1 部分案例可交互"
+      - "能力等级 UI 明示"
+      - "断网可用、无 CDN"
+      - "3 名测试者独立完成暂停→换视角"
+  - id: G5
+    name: "证据闭合"
+    week: 6
+    date: "2026-12-06"
+    criteria:
+      - "三设想各 ≥2 条证据（含反例/边界）"
+      - "双人评分 + 仲裁记录齐全"
+      - "每个数字可追溯"
+      - "观察记录含待验证之处"
+
+tasks:
+  # ---------- P0 ----------
+  - id: T0.1
+    phase: P0
+    name: "开题报告"
+    owner: R1
+    hours: 0
+    week: 0
+    deps: []
+    outputs: ["ComputerVision_final(1).pdf"]
+    dod: "8 页、36 篇引用、三观察任务与交付物明确"
+    status: done
+
+  # ---------- P1 ----------
+  - id: T1.1
+    phase: P1
+    name: "文献矩阵补全（36 篇 × 7 字段）"
+    owner: R2
+    hours: 8
+    week: 1
+    deps: []
+    outputs: ["matrix/lit_matrix.csv"]
+    dod: "36 行无空缺；未知项显式标注"
+  - id: T1.2
+    phase: P1
+    name: "三接口框架与 4×3×3 分析立方"
+    owner: R1
+    hours: 6
+    week: 1
+    deps: [T1.1]
+    outputs: ["framework/analysis_cube.md", "assets/fig2_pipeline.png"]
+    dod: "每个接口有定义/观测量/失效表现/对应任务"
+  - id: T1.3
+    phase: P1
+    name: "能力矩阵 v1（14 方法 × 9 列）"
+    owner: R1
+    hours: 8
+    week: 1
+    deps: [T1.2]
+    outputs: ["matrix/capability_matrix.md"]
+    dod: "每格有出处；不含主观评分"
+  - id: T1.4
+    phase: P1
+    name: "2026 前沿补遗（10 条）"
+    owner: R2
+    hours: 4
+    week: 1
+    deps: []
+    outputs: ["matrix/frontier_2026.md"]
+    dod: "每条含 arXiv 号、日期、环节对应"
+  - id: T1.5
+    phase: P1
+    name: "术语表与引用规范"
+    owner: R1
+    hours: 3
+    week: 1
+    deps: []
+    outputs: ["writing/glossary.md"]
+    dod: "15 条术语；标注同名不同义（CLIP-F 等）"
+
+  # ---------- P2 ----------
+  - id: T2.1
+    phase: P2
+    name: "候选案例池（≥8）与 5 维打分"
+    owner: R2
+    hours: 8
+    week: 1
+    deps: [T1.3]
+    outputs: ["cases/candidates.md"]
+    dod: "每候选含输入/方法/资产/许可"
+  - id: T2.2
+    phase: P2
+    name: "案例锁定会（3 选 1 讨论并记录淘汰理由）"
+    owner: R1
+    hours: 4
+    week: 2
+    deps: [T2.1]
+    outputs: ["cases/decision.md"]
+    dod: "淘汰理由可复查"
+  - id: T2.3
+    phase: P2
+    name: "素材获取与台账（含许可与哈希）"
+    owner: R2
+    hours: 12
+    week: 2
+    deps: [T2.2]
+    outputs: ["ledger/assets.csv", "cases/C1/input/*"]
+    dod: "字段齐全；哈希可复算"
+  - id: T2.4
+    phase: P2
+    name: "案例脚本 v1（问题/输入/观察点/失败含义）"
+    owner: R1
+    hours: 6
+    week: 2
+    deps: [T2.2]
+    outputs: ["cases/C1/script.md", "cases/C2/script.md", "cases/C3/script.md"]
+    dod: "每案例 1 页；含预期失败模式"
+
+  # ---------- P3 ----------
+  - id: T3.1
+    phase: P3
+    name: "观察协议（三任务 SOP + rubric）"
+    owner: R1
+    hours: 8
+    week: 2
+    deps: [T1.2]
+    outputs: ["06_案例观察协议.md"]
+    dod: "每任务有怎么做/看什么/怎么记/怎么判"
+  - id: T3.2
+    phase: P3
+    name: "标注模板与命名规范（JSON schema）"
+    owner: R3
+    hours: 4
+    week: 2
+    deps: [T3.1]
+    outputs: ["obs/_template.json", "obs/README.md"]
+    dod: "字段可校验；命名规则唯一"
+  - id: T3.3
+    phase: P3
+    name: "预标注试运行（2 人独立，算 κ）"
+    owner: R3
+    hours: 6
+    week: 3
+    deps: [T3.2]
+    outputs: ["obs/pilot/", "obs/pilot/agreement.csv"]
+    dod: "二次加权 κ 已计算；<0.6 已修订"
+  - id: T3.4
+    phase: P3
+    name: "指标脚本（CLIP-I / 轮廓 IoU / 光流 warp / LPIPS / 成本解析）"
+    owner: R3
+    hours: 8
+    week: 3
+    deps: [T3.2]
+    outputs: ["scripts/metrics.py", "metrics/_schema.md"]
+    dod: "一条命令跑完；输出含输入哈希与时间戳"
+
+  # ---------- P4 ----------
+  - id: T4.1
+    phase: P4
+    name: "环境与依赖（CUDA/conda/commit/权重）"
+    owner: R2
+    hours: 6
+    week: 2
+    deps: [T2.3]
+    outputs: ["env/README.md", "ledger/runs.csv"]
+    dod: "从零到跑通 ≤2 h（有记录）"
+  - id: T4.2
+    phase: P4
+    name: "主案例跑通与补渲染（12 方位 × 3 仰角 + 全时序列）"
+    owner: R2
+    hours: 10
+    week: 3
+    deps: [T4.1]
+    outputs: ["cases/C1/render/", "cases/C1/camera.json"]
+    dod: "帧命名合规；相机参数已记录"
+  - id: T4.3
+    phase: P4
+    name: "备选路径验证（降级等级记录）"
+    owner: R2
+    hours: 6
+    week: 3
+    deps: [T4.2]
+    outputs: ["cases/C1/fallback.md"]
+    dod: "失败点与降级等级明确"
+  - id: T4.4
+    phase: P4
+    name: "资源日志（生成/构建/渲染三段 + 显存）"
+    owner: R2
+    hours: 2
+    week: 3
+    deps: [T4.2]
+    outputs: ["ledger/runs.csv"]
+    dod: "三段分离；单位统一"
+
+  # ---------- P5 ----------
+  - id: T5.1
+    phase: P5
+    name: "信息架构与低保真（案例/机制/对照）"
+    owner: R4
+    hours: 6
+    week: 2
+    deps: [T3.1]
+    outputs: ["proto/wireframe.png"]
+    dod: "三任务各有入口；能力等级可见"
+  - id: T5.2
+    phase: P5
+    name: "数据 schema 与资产管线（图集生成）"
+    owner: R4
+    hours: 8
+    week: 3
+    deps: [T3.2]
+    outputs: ["07_原型规格与数据结构.md", "proto/data/cases.json", "scripts/build_assets.py"]
+    dod: "schema 冻结；新增案例 ≤30 min"
+  - id: T5.3
+    phase: P5
+    name: "前端 MVP（时间轴/视角盘/显示模式）"
+    owner: R4
+    hours: 16
+    week: 4
+    deps: [T5.2]
+    outputs: ["proto/index.html", "proto/case.html", "proto/js/*"]
+    dod: "离线可跑；切换 ≤200 ms"
+  - id: T5.4
+    phase: P5
+    name: "机制标注层（标注 → 解释 → 出处）"
+    owner: R4
+    hours: 6
+    week: 5
+    deps: [T5.3]
+    outputs: ["proto/js/annotations.js", "proto/data/C1.json#annotations"]
+    dod: "每个标注有编号/机制/出处"
+  - id: T5.5
+    phase: P5
+    name: "可用性测试（3 人任务式）"
+    owner: R4
+    hours: 4
+    week: 5
+    deps: [T5.3]
+    outputs: ["proto/usability.md"]
+    dod: "3 人 2 分钟内完成暂停→换视角"
+
+  # ---------- P6 ----------
+  - id: T6.1
+    phase: P6
+    name: "任务 1 执行（固定 t，12 视角）"
+    owner: R3
+    hours: 10
+    week: 5
+    deps: [T4.2, T5.3]
+    outputs: ["obs/C1/T1.md", "obs/C1/T1/*.json"]
+    dod: "每案例 ≥3 关键时刻；双人评分"
+  - id: T6.2
+    phase: P6
+    name: "任务 2 执行（固定 C，全程）"
+    owner: R3
+    hours: 10
+    week: 5
+    deps: [T4.2, T5.3]
+    outputs: ["obs/C*/T2.md"]
+    dod: "标出动作转折与遮挡重现帧"
+  - id: T6.3
+    phase: P6
+    name: "任务 3 执行（同 (C,t) 配对 + 深度/法线）"
+    owner: R3
+    hours: 8
+    week: 6
+    deps: [T4.2]
+    outputs: ["obs/C*/T3.md", "obs/C*/T3/pairs/*"]
+    dod: "≥4 组配对帧；差异定位到区域"
+  - id: T6.4
+    phase: P6
+    name: "指标汇总与可视化"
+    owner: R3
+    hours: 6
+    week: 6
+    deps: [T3.4, T6.1, T6.2, T6.3]
+    outputs: ["metrics/summary.csv", "assets/fig_metrics.png"]
+    dod: "每个数字可追溯到输入文件"
+  - id: T6.5
+    phase: P6
+    name: "设想-证据矩阵闭合"
+    owner: R1
+    hours: 6
+    week: 6
+    deps: [T6.4]
+    outputs: ["analysis/claims_evidence.md"]
+    dod: "每条证据标注强度；含反例"
+
+  # ---------- P7 ----------
+  - id: T7.1
+    phase: P7
+    name: "报告大纲与分工（按问题传递链）"
+    owner: R1
+    hours: 3
+    week: 6
+    deps: [T6.5]
+    outputs: ["report/outline.md"]
+    dod: "每节有要证明什么的一句话"
+  - id: T7.2
+    phase: P7
+    name: "正文写作（5 章）"
+    owner: R1
+    hours: 24
+    week: 7
+    deps: [T7.1]
+    outputs: ["report/report.md"]
+    dod: "三设想各成一节；每节有案例锚点"
+  - id: T7.3
+    phase: P7
+    name: "图表制作（5 图 3 表）"
+    owner: R3
+    hours: 8
+    week: 7
+    deps: [T7.2]
+    outputs: ["assets/fig1_timeline.png", "assets/fig2_pipeline.png", "assets/fig4_caseflow.png", "assets/fig5_gantt.png"]
+    dod: "图注自含；数据可溯源"
+  - id: T7.4
+    phase: P7
+    name: "交叉核验（引用/数字/URL/许可）"
+    owner: R2
+    hours: 4
+    week: 7
+    deps: [T7.2]
+    outputs: ["report/checklist.md"]
+    dod: "36+ 引用逐条核；3 个 404 地址已替换"
+  - id: T7.5
+    phase: P7
+    name: "答辩 PPT + 讲稿 + 演示脚本"
+    owner: R4
+    hours: 10
+    week: 7
+    deps: [T7.2]
+    outputs: ["slides/deck.pptx", "slides/script.md", "slides/demo.mp4"]
+    dod: "12 分钟；含 1 次交互演示；录屏兜底"
+  - id: T7.6
+    phase: P7
+    name: "彩排与冻结（tag + 打包）"
+    owner: R1
+    hours: 4
+    week: 8
+    deps: [T7.2, T7.3, T7.4, T7.5]
+    outputs: ["dist/", "README.md#复现"]
+    dod: "断网可演示；包内可复跑"
+
+risks:
+  - id: R1
+    risk: "主方法跑不起来（无代码/gated/显存不足）"
+    probability: medium
+    impact: high
+    trigger: "W2 结束仍无一张输出"
+    mitigation: "启用备方法；降级 L1（项目页视频）；案例脚本改为引用+对照"
+  - id: R2
+    risk: "素材不可对照（相机/时刻不匹配）"
+    probability: medium
+    impact: high
+    trigger: "找不到同 (C,t) 配对"
+    mitigation: "自建 3D 资产 + Blender 渲染 GT（子流程 C）"
+  - id: R3
+    risk: "观察主观、评分不可信"
+    probability: high
+    impact: medium
+    trigger: "pilot κ < 0.6"
+    mitigation: "修订 rubric 锚点；第三人仲裁；报告 κ 与分歧"
+  - id: R4
+    risk: "原型范围膨胀"
+    probability: high
+    impact: medium
+    trigger: "W4 仍在改 IA"
+    mitigation: "冻结 IA；只做三控件；第三案例只做视频"
+  - id: R5
+    risk: "时间不足"
+    probability: medium
+    impact: high
+    trigger: "任一里程碑滑期 > 2 天"
+    mitigation: "降级顺序：砍定量指标 → 砍第三案例交互 → 砍 2026 补遗 → 保留三案例定性 + 两案例原型"
+  - id: R6
+    risk: "结论与证据不匹配"
+    probability: medium
+    impact: high
+    trigger: "设想-证据矩阵出现孤证"
+    mitigation: "每设想 ≥2 案例；标证据强度；写未证实"
+  - id: R7
+    risk: "环境/算力故障"
+    probability: medium
+    impact: medium
+    trigger: "依赖冲突/CUDA 不匹配"
+    mitigation: "conda/镜像文件；云 GPU 备用；Dockerfile"
+  - id: R8
+    risk: "引用/数字错误"
+    probability: low
+    impact: high
+    trigger: "交叉核验发现"
+    mitigation: "证据等级 + 双人复核；数字带单位与出处"
+
+deliverables:
+  D1: {name: "综述报告", path: "report/", dod: "≥8000 字；5 图 3 表；36+ 引用"}
+  D2: {name: "交互式原型", path: "proto/", dod: "2 完整 + 1 部分案例；离线可跑；能力等级明示"}
+  D3: {name: "观察记录", path: "obs/", dod: "3 案例 × 3 任务；双人评分 + 仲裁"}
+  D4: {name: "答辩材料", path: "slides/", dod: "12 分钟；现场演示 + 录屏兜底"}
+  D5: {name: "证据包", path: "ledger/ metrics/ sources/", dod: "可复跑；可追溯"}
